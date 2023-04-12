@@ -25,6 +25,6 @@ class ProductController extends AbstractController
     {
         $products = $productRepository->findAll();
 
-        return $this->json($products, Response::HTTP_OK);
+        return $this->json($products, Response::HTTP_OK,[] , ['groups'=>'product:read']);
     }
 }
