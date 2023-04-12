@@ -28,7 +28,7 @@ class Product
     
     #[ORM\Column(nullable: true)]
     #[Assert\PositiveOrZero()]
-    #[Assert\Regex("/^\d+[,][\d]{2}$/")]
+    #[Assert\Regex("/(^\d+[,]\d{2}$)/")]
     private ?string $price = null;
 
     #[ORM\Column(length: 255, nullable: true)]
