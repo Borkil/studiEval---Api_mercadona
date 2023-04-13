@@ -33,10 +33,9 @@ class Product
     private ?string $description = null;
     
     #[ORM\Column(nullable: true)]
-    #[Assert\PositiveOrZero()]
-    #[Assert\Regex("/(^\d+[,]\d{2}$)/")]
+    #[Assert\Positive]
     #[Groups(['product:read'])]
-    private ?string $price = null;
+    private ?float $Price = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['product:read'])]
@@ -53,8 +52,6 @@ class Product
     #[ORM\OneToMany(mappedBy: 'Product', targetEntity: Deal::class,  cascade: ['persist'])]
     #[Groups(['product:read'])]
     private Collection $deals;
-
-  
 
     public function __construct() {
         $this->createdAt = new DateTimeImmutable();
@@ -91,14 +88,14 @@ class Product
         return $this;
     }
 
-    public function getPrice(): ?string
+    public function getPrice(): ?float
     {
-        return $this->price;
+        return $this->Price;
     }
 
-    public function setPrice(?string $price): self
+    public function setPrice(?float $Price): self
     {
-        $this->price = $price;
+        $this->Price = $Price;
 
         return $this;
     }
@@ -168,4 +165,6 @@ class Product
 
         return $this;
     }
+
+
 }

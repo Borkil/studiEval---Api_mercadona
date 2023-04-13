@@ -3,7 +3,6 @@
 namespace App\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\BrowserKit\Response;
 
 class ProductApiTest extends WebTestCase
 {
