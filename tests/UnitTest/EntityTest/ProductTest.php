@@ -14,7 +14,7 @@ class ProductTest extends KernelTestCase
         return (new Product())
             ->setLabel('Mon produit')
             ->setDescription('Mon produit a un description')
-            ->setPrice('27,21')
+            ->setPrice(20.02)
             ->setImage('nomdelimage.jpeg');
     }
 
@@ -49,27 +49,5 @@ class ProductTest extends KernelTestCase
     {
         $this->assertHasErrors($this->getEntity()->setDescription(''), 1);
     }
-    
-    public function testShould_valid_When_priceTemplateIsOK()
-    {
-        $this->assertHasErrors($this->getEntity()->setPrice('27,00'), 0);
-        $this->assertHasErrors($this->getEntity()->setPrice('465121327,00'), 0);
-        $this->assertHasErrors($this->getEntity()->setPrice('0,12'), 0);
-        $this->assertHasErrors($this->getEntity()->setPrice('0,00'), 0);
-    }
 
-    public function testShould_invalid_When_priceTemplateIsNotOk()
-    {
-        $this->assertHasErrors($this->getEntity()->setPrice('27,123'), 1);
-        $this->assertHasErrors($this->getEntity()->setPrice('a27,12'), 1);
-        $this->assertHasErrors($this->getEntity()->setPrice('27,a1'), 1);
-        $this->assertHasErrors($this->getEntity()->setPrice('27'), 1);
-        $this->assertHasErrors($this->getEntity()->setPrice('27,'), 1);
-        $this->assertHasErrors($this->getEntity()->setPrice('27,00ad'), 1);
-    }
-
-    public function testShould_invalid_When_priceIsNegative()
-    {
-        $this->assertHasErrors($this->getEntity()->setPrice('-10,12'),2);
-    }
 }

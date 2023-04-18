@@ -30,8 +30,6 @@ class AppFixtures extends Fixture
                 $interval =new DateInterval('P' . rand(5,15). 'D');
                 $finishDate = new DateTimeImmutable();
                 
-
-
                 $deal = (new Deal())
                     ->setStartedAt(new DateTimeImmutable())
                     ->setFinishedAt($finishDate->add($interval)) 
