@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-// #[UniqueEntity('label')]
+#[UniqueEntity('label')]
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category
 {

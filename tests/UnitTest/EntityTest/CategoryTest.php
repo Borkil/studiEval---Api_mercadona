@@ -41,5 +41,15 @@ class CategoryTest extends KernelTestCase
         return $this->assertHasErrors($this->getEntity()->setLabel(''), 1);
     }
 
+
+    /**
+     * Test si un label est unique en bdd
+     * doit retourner une erreurs si le produit existe deja en bdd
+     */
+    public function testShould_invalid_When_labelAlreadyExists()
+    {
+        $this->assertHasErrors($this->getEntity()->setLabel('test'),1);
+    }
+
     
 }
