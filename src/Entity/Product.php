@@ -53,7 +53,7 @@ class Product
     #[Groups(['product:read'])]
     private Collection $deals;
 
-    #[ORM\ManyToOne(inversedBy: 'product')]
+    #[ORM\ManyToOne(inversedBy: 'product', cascade: ['persist'])]
     #[Groups(['product:read'])]
     private ?Category $category = null;
 

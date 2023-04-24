@@ -27,7 +27,7 @@ class DealControllerTest extends WebTestCase
   {
     parent::setUp();
     $this->client = static::createClient();
-    $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();;
+    $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
   }
 
   public function assertHasErrors(string $method, string $path, int $responseCode, string $content = null, string $responseFormat = 'json')
