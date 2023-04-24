@@ -17,7 +17,9 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CategoryController extends AbstractController
 {
-
+    /**
+     * Return all categories
+     */
     #[OA\Response(
         response: 200,
         description: 'show all categories',
@@ -30,7 +32,30 @@ class CategoryController extends AbstractController
         return $this->json($data, Response::HTTP_OK);
     }
     
-    
+    /**
+     * Create a new category
+     */
+    #[OA\RequestBody(
+        description:'Create a category',
+        required: true,
+        content: new Model(type: Category::class)
+    )]
+    #[OA\Response(
+        response : Response::HTTP_CREATED,
+        description : 'Successful operation',
+        content: new Model(type: Category::class)
+    )]
+    #[OA\Response(
+        response : Response::HTTP_BAD_REQUEST,
+        description : 'Invalide Request',
+        content: new OA\JsonContent(
+            type: 'object',
+            properties: [
+                new OA\Property(property: 'status', type:'integer'),
+                new OA\Property(property: 'message', type:'string')
+            ]
+        )
+    )]
     #[Route('/api/category', name: 'api_create_category', methods:['POST'])]
     public function create(Request $request, SerializerInterface $serializer, EntityManagerInterface $manager, ValidatorInterface $validator)
     {
@@ -55,6 +80,30 @@ class CategoryController extends AbstractController
         }
     }
 
+    /**
+     * Update a new category
+     */
+    #[OA\RequestBody(
+        description:'Create a category',
+        required: true,
+        content: new Model(type: Category::class)
+    )]
+    #[OA\Response(
+        response : Response::HTTP_ACCEPTED,
+        description : 'Successful operation',
+        content: new Model(type: Category::class)
+    )]
+    #[OA\Response(
+        response : Response::HTTP_BAD_REQUEST,
+        description : 'Invalide Request',
+        content: new OA\JsonContent(
+            type: 'object',
+            properties: [
+                new OA\Property(property: 'status', type:'integer'),
+                new OA\Property(property: 'message', type:'string')
+            ]
+        )
+    )]
     #[Route('/api/category/{id}', name: 'api_update_category', methods: ['POST'])]
     public function update(EntityManagerInterface $manager, Request $request, CategoryRepository $categoryRepository, int $id, SerializerInterface $serialiser, ValidatorInterface $validator)
     {

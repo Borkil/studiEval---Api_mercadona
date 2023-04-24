@@ -39,9 +39,7 @@ class ProductController extends AbstractController
 
         return $this->json($products, Response::HTTP_OK,[] , ['groups'=>'product:read']);
     }
-
-
-
+    
     /**
      * Create a new product
      */
