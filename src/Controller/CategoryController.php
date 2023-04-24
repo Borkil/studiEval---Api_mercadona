@@ -29,7 +29,7 @@ class CategoryController extends AbstractController
     public function index(CategoryRepository $categoryRepository): Response
     {
         $data = $categoryRepository->findAll();
-        return $this->json($data, Response::HTTP_OK);
+        return $this->json($data, Response::HTTP_OK, [], ['groups'=>'category:read']);
     }
     
     /**

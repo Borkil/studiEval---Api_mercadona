@@ -2,13 +2,14 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Deal;
-use App\Entity\Product;
+use DateTime;
 use DateInterval;
+use Faker\Factory;
+use App\Entity\Deal;
 use DateTimeImmutable;
+use App\Entity\Product;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Faker\Factory;
 
 class AppFixtures extends Fixture
 {
@@ -31,9 +32,9 @@ class AppFixtures extends Fixture
                 $finishDate = new DateTimeImmutable();
                 
                 $deal = (new Deal())
-                    ->setStartedAt(new DateTimeImmutable())
-                    ->setFinishedAt($finishDate->add($interval)) 
+                    ->setStartedAt($faker->dateTimeBetween('now', '+5 days'))
                     ->setPercentage(10);
+                $deal->setFinishedAt($faker->dateTimeBetween($deal->getStartedAt(), '+10 days')); 
 
                 $newPrice = round($product->getPrice() * (1-($deal->getPercentage()/100)), 2);
 

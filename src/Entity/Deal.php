@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
-use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\DealRepository;
+use DateTime;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -19,19 +19,19 @@ class Deal
 
     #[ORM\Column]
     #[Groups(['product:read'])]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?\DateTime $createdAt = null;
 
     #[ORM\Column]
     #[Groups(['product:read'])]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?\DateTime $updatedAt = null;
 
     #[ORM\Column]
     #[Groups(['product:read'])]
-    private ?\DateTimeImmutable $StartedAt = null;
+    private ?\DateTime $StartedAt = null;
 
     #[ORM\Column]
     #[Groups(['product:read'])]
-    private ?\DateTimeImmutable $finishedAt = null;
+    private ?\DateTime $finishedAt = null;
 
     #[ORM\Column]
     #[Assert\Range(max: 99, min: 1 )]
@@ -48,8 +48,8 @@ class Deal
     
     public function __construct ()
     {
-        $this->createdAt = new DateTimeImmutable();
-        $this->updatedAt = new DateTimeImmutable();
+        $this->createdAt = new DateTime();
+        $this->updatedAt = new DateTime();
     }
 
     public function getId(): ?int
@@ -57,48 +57,48 @@ class Deal
         return $this->id;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(\DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
+    public function setUpdatedAt(\DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    public function getStartedAt(): ?\DateTimeImmutable
+    public function getStartedAt(): ?\DateTime
     {
         return $this->StartedAt;
     }
 
-    public function setStartedAt(\DateTimeImmutable $StartedAt): self
+    public function setStartedAt(\DateTime $StartedAt): self
     {
         $this->StartedAt = $StartedAt;
 
         return $this;
     }
 
-    public function getFinishedAt(): ?\DateTimeImmutable
+    public function getFinishedAt(): ?\DateTime
     {
         return $this->finishedAt;
     }
 
-    public function setFinishedAt(\DateTimeImmutable $finishedAt): self
+    public function setFinishedAt(\DateTime $finishedAt): self
     {
         $this->finishedAt = $finishedAt;
 

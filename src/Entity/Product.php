@@ -54,6 +54,7 @@ class Product
     private Collection $deals;
 
     #[ORM\ManyToOne(inversedBy: 'product')]
+    #[Groups(['product:read'])]
     private ?Category $category = null;
 
     public function __construct() {
