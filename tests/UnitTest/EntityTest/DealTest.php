@@ -3,7 +3,7 @@
 namespace App\Tests;
 
 use App\Entity\Deal;
-use DateTimeImmutable;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class DealTest extends KernelTestCase
@@ -11,8 +11,8 @@ class DealTest extends KernelTestCase
     public function getEntity ()
     {
         return (new Deal())
-            ->setStartedAt(new DateTimeImmutable('15-05-2023'))
-            ->setFinishedAt(new DateTimeImmutable('25-08-2023'))
+            ->setStartedAt(new DateTime('15-05-2023'))
+            ->setFinishedAt(new DateTime('25-08-2023'))
             ->setPercentage(10)
             ->setDealPrice(round((100 * 0.90),2));
     }

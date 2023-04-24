@@ -16,7 +16,7 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'category:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 150)]
@@ -24,33 +24,33 @@ class Product
         max: 150
     )]
     #[Assert\NotBlank()]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'category:read'])]
     private ?string $label = null;
     
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\NotBlank()]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'category:read'])]
     private ?string $description = null;
     
     #[ORM\Column(nullable: true)]
     #[Assert\Positive]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'category:read'])]
     private ?float $Price = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'category:read'])]
     private ?string $image = null;
 
     #[ORM\Column]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'category:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'category:read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'Product', targetEntity: Deal::class,  cascade: ['persist'])]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'category:read'])]
     private Collection $deals;
 
     #[ORM\ManyToOne(inversedBy: 'product', cascade: ['persist'])]

@@ -14,33 +14,33 @@ class Deal
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'category:read'])]
     private ?int $id = null;
 
     #[ORM\Column]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'category:read'])]
     private ?\DateTime $createdAt = null;
 
     #[ORM\Column]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'category:read'])]
     private ?\DateTime $updatedAt = null;
 
     #[ORM\Column]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'category:read'])]
     private ?\DateTime $StartedAt = null;
 
     #[ORM\Column]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'category:read'])]
     private ?\DateTime $finishedAt = null;
 
     #[ORM\Column]
     #[Assert\Range(max: 99, min: 1 )]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'category:read'])]
     private ?int $percentage = null;
 
     #[ORM\Column()]
     #[Assert\Positive()]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'category:read'])]
     private ?float $dealPrice = null;
 
     #[ORM\ManyToOne(inversedBy: 'deals')]

@@ -17,16 +17,17 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'category:read'])]
     private ?int $id = null;
 
     #[ORM\Column()]
     #[Assert\NotBlank]
     #[Assert\Length(max: 50)]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'category:read'])]
     private ?string $label = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Product::class)]
+    #[Groups(['category:read'])]
     private Collection $product;
 
     public function __construct()
