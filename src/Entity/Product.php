@@ -53,6 +53,10 @@ class Product
     #[Groups(['product:read'])]
     private ?Category $category = null;
 
+    #[ORM\ManyToOne(inversedBy: 'Product')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?ProductStatus $productStatus = null;
+
     public function __construct() {
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = new DateTimeImmutable();
@@ -143,6 +147,18 @@ class Product
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getProductStatus(): ?ProductStatus
+    {
+        return $this->productStatus;
+    }
+
+    public function setProductStatus(?ProductStatus $productStatus): self
+    {
+        $this->productStatus = $productStatus;
 
         return $this;
     }
