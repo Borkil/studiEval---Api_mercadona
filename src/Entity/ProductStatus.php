@@ -2,11 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\ProductStatusRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ProductStatusRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+#[UniqueEntity('label')]
 #[ORM\Entity(repositoryClass: ProductStatusRepository::class)]
 class ProductStatus
 {
@@ -16,6 +20,7 @@ class ProductStatus
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank()]
     private ?string $label = null;
 
     #[ORM\OneToMany(mappedBy: 'productStatus', targetEntity: Product::class)]
