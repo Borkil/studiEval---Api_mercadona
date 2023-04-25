@@ -55,6 +55,15 @@ class Product
     #[ORM\JoinColumn(nullable: false)]
     private ?ProductStatus $productStatus = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $finisheDealdAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $percentage = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $priceDeal = null;
+
     public function __construct() {
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = new DateTimeImmutable();
@@ -157,6 +166,42 @@ class Product
     public function setProductStatus(?ProductStatus $productStatus): self
     {
         $this->productStatus = $productStatus;
+
+        return $this;
+    }
+
+    public function getFinishedDealAt(): ?\DateTimeImmutable
+    {
+        return $this->finisheDealdAt;
+    }
+
+    public function setFinishedDealAt(?\DateTimeImmutable $finishedAt): self
+    {
+        $this->finisheDealdAt = $finishedAt;
+
+        return $this;
+    }
+
+    public function getPercentage(): ?int
+    {
+        return $this->percentage;
+    }
+
+    public function setPercentage(?int $percentage): self
+    {
+        $this->percentage = $percentage;
+
+        return $this;
+    }
+
+    public function getPriceDeal(): ?float
+    {
+        return $this->priceDeal;
+    }
+
+    public function setPriceDeal(?float $priceDeal): self
+    {
+        $this->priceDeal = $priceDeal;
 
         return $this;
     }

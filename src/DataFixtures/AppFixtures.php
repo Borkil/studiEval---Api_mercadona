@@ -4,8 +4,9 @@ namespace App\DataFixtures;
 
 use App\Entity\Category;
 use Faker\Factory;
-use App\Entity\Deal;
 use App\Entity\Product;
+use App\Entity\ProductStatus;
+use DateTimeImmutable;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 
@@ -14,6 +15,17 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
+
+        $productStatus = ['onSale', 'onDeal', 'Archive'];
+        $arrayStatus = [];
+
+        foreach ($productStatus as $value) {
+            $newStatus = (new ProductStatus())
+                ->setLabel($value);
+            $manager->persist($newStatus);
+            $arrayStatus[] = $newStatus;
+        }
+
         $categories = [];
 
         for ($i=0; $i < 3; $i++) { 
@@ -27,22 +39,16 @@ class AppFixtures extends Fixture
                 ->setDescription($faker->realTextBetween(50, 255))
                 ->setPrice($faker->randomFloat(2,0,1500))
                 ->setImage($faker->image())
-                ->setCategory($categories[rand(0,2)]);
+                ->setCategory($categories[rand(0,2)])
+                ->setProductStatus($arrayStatus[0]);
 
-            $testNumber = rand(0, 100);
-            if($testNumber % 2 === 0)
-            {                
-                $deal = (new Deal())
-                    ->setStartedAt($faker->dateTimeBetween('now', '+5 days'))
-                    ->setPercentage(10);
-                $deal->setFinishedAt($faker->dateTimeBetween($deal->getStartedAt(), '+10 days')); 
-
-                $newPrice = round($product->getPrice() * (1-($deal->getPercentage()/100)), 2);
-
-                $deal->setDealPrice($newPrice);
-
-                $product->addDeal($deal);
-
+            if(rand(0, 100) % 2 === 0)
+            {   
+                $product->setFinishedDealAt(new DateTimeImmutable("+10 days"));
+                $product->setPercentage(10);
+                $newPrice= round((1 - ($product->getPercentage() / 100)) * $product->getPrice(),2);
+                $product->setPriceDeal($newPrice);                
+                $product->setProductStatus($arrayStatus[1]);
             }
 
                 $manager->persist($product);
