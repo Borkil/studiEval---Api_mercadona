@@ -49,10 +49,6 @@ class Product
     #[Groups(['product:read', 'category:read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'Product', targetEntity: Deal::class,  cascade: ['persist'])]
-    #[Groups(['product:read', 'category:read'])]
-    private Collection $deals;
-
     #[ORM\ManyToOne(inversedBy: 'product', cascade: ['persist'])]
     #[Groups(['product:read'])]
     private ?Category $category = null;
@@ -60,7 +56,6 @@ class Product
     public function __construct() {
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = new DateTimeImmutable();
-        $this->deals = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -136,36 +131,6 @@ class Product
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Deal>
-     */
-    public function getDeals(): Collection
-    {
-        return $this->deals;
-    }
-
-    public function addDeal(Deal $deal): self
-    {
-        if (!$this->deals->contains($deal)) {
-            $this->deals->add($deal);
-            $deal->setProduct($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDeal(Deal $deal): self
-    {
-        if ($this->deals->removeElement($deal)) {
-            // set the owning side to null (unless already changed)
-            if ($deal->getProduct() === $this) {
-                $deal->setProduct(null);
-            }
-        }
 
         return $this;
     }
