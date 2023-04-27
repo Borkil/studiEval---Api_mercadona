@@ -43,7 +43,7 @@ class Product
     private ?string $image = null;
     
     #[ORM\ManyToOne(inversedBy: 'product', cascade: ['persist'])]
-    #[Groups(['product:read','product:read'])]
+    #[Groups(['product:read','product:create', 'product:read'])]
     private ?Category $category = null;
 
     #[ORM\Column(nullable: true)]

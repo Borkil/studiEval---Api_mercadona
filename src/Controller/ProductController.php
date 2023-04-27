@@ -4,22 +4,17 @@ namespace App\Controller;
 
 use Exception;
 use App\Entity\Product;
-use App\Repository\CategoryRepository;
 use OpenApi\Attributes As OA;
 use App\Repository\ProductRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
-use OpenApi\Processors\AugmentProperties;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
 
 class ProductController extends AbstractController
 {
@@ -38,9 +33,7 @@ class ProductController extends AbstractController
     #[Route('/api/product', name: 'api_show_product', methods:['GET'])]
     public function index(ProductRepository $productRepository): Response
     {
-        $products = $productRepository->findAll();
-
-        return $this->json($products, Response::HTTP_OK,[] , ['groups'=>'product:read']);
+        return $this->json($productRepository->findAll(), Response::HTTP_OK,[] , ['groups'=>'product:read']);
     }
     
     /**
@@ -51,7 +44,6 @@ class ProductController extends AbstractController
         required:true,
         content: new Model(type: Product::class, groups: ['product:create'])
     )]
-
     #[OA\Response(
         response : Response::HTTP_CREATED,
         description : 'Successful operation',
@@ -67,8 +59,7 @@ class ProductController extends AbstractController
                 new OA\Property(property: 'errorMessage', type:'string')
             ]
         )
-    )]
-                        
+    )]               
     #[Route('/api/product', name: 'api_create_product', methods:['POST'])]
     public function add(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManagerInterface,ValidatorInterface $validator)
     {
