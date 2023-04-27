@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use Exception;
 use App\Entity\Product;
+use App\Repository\CategoryRepository;
 use OpenApi\Attributes As OA;
 use App\Repository\ProductRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,28 +67,32 @@ class ProductController extends AbstractController
         )
     )]
                         
-    #[Route('/api/product', name: 'api_add_product', methods:['POST'])]
-    public function add(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManagerInterface, ValidatorInterface $validator)
+    #[Route('/api/product', name: 'api_create_product', methods:['POST'])]
+    public function add(
+    Request $request,
+    SerializerInterface $serializer,
+    EntityManagerInterface $entityManagerInterface,
+    ValidatorInterface $validator,
+    CategoryRepository $categoryRepository)
     {
         try {
-            $newProduct =$serializer->deserialize($request->getContent(), Product::class, 'json');
-            
-            $errorValidator = $validator->validate($newProduct);
-            if(count($errorValidator) > 0)
-            {
-                throw new ValidatorException(message: 'Validation errors');
-            }
+            $newProduct = $serializer->deserialize($request->getContent(), Product::class, 'json');
 
+            $errors = $validator->validate($newProduct);
+
+            if($errors->count() > 0){
+                throw new Exception(message: $errors);
+            }
 
             $entityManagerInterface->persist($newProduct);
             $entityManagerInterface->flush();
-            return $this->json($newProduct, Response::HTTP_CREATED);
+            return $this->json($newProduct, Response::HTTP_CREATED, ['groups'=>'product:read']);
 
         } catch (Exception $e) {
-            return $this->json([
-                'status' => Response::HTTP_BAD_REQUEST,
-                'errorMessage' => $e->getMessage()
-            ]);
+            return $this->json(
+                ['status' => Response::HTTP_BAD_REQUEST,
+                 'message' => $e->getMessage()       
+            ],Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -114,13 +120,12 @@ class ProductController extends AbstractController
             ]
         )
     )]
-    #[Route('/api/product/update/{id}', name:'api_update_product', methods:['POST'])]
+    #[Route('/api/product/{id}', name:'api_update_product', methods:['PUT'])]
     public function update(EntityManagerInterface $entityManager,int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator)
     {
         try {
 
             $product = $entityManager->getRepository(Product::class)->find($id);
-            
             if(!$product)
             {
                 return $this->json([
@@ -128,19 +133,26 @@ class ProductController extends AbstractController
                     'message' => 'product not found'
                 ],Response::HTTP_NOT_FOUND);
             }
-
+            
             $content = $serializer->deserialize($request->getContent(), Product::class, 'json');
 
-            $product->setLabel($content->getLabel());
-            $product->setDescription($content->getDescription());
-            $product->setPrice($content->getPrice());
-            $product->setImage($content->getImage());
-            $product->setUpdatedAt($content->getUpdatedAt());
+            $priceDeal = round((1 - ($content->getPercentage() / 100)) * $product->getPrice());
+            
+            $product->setLabel($content->getLabel())
+                ->setDescription($content->getDescription())
+                ->setPrice($content->getPrice())
+                ->setImage($content->getImage())
+                ->setPercentage($content->getPercentage())
+                ->setPriceDeal($priceDeal)
+                ->setFinishDealAt($content->getFinishDealAt())
+                ->setIsDeal($content->isIsDeal())
+                ->setIsArchive($content->isIsArchive())
+                ->setUpdatedAt(new DateTimeImmutable());
 
-            $errorValidator = $validator->validate($product);
-            if(count($errorValidator) > 0)
-            {
-                throw new ValidatorException(message: 'Validation errors');
+            $errors = $validator->validate($product);
+
+            if($errors->count() > 0){
+                throw new Exception(message: $errors);
             }
 
             $entityManager->flush();
@@ -151,14 +163,8 @@ class ProductController extends AbstractController
             return $this->json([
                 'status' => Response::HTTP_BAD_REQUEST,
                 'errorMessage' => $e->getMessage()
-            ]);
-        } catch (NotFoundHttpException $e)
-        {
-            return $this->json([
-                'status' => Response::HTTP_NOT_FOUND,
-                'message' => 'product not found'
-            ],Response::HTTP_NOT_FOUND);
-        }
+            ], Response::HTTP_BAD_REQUEST);
+        } 
     }
 
 }

@@ -64,7 +64,7 @@ class CategoryController extends AbstractController
             $errors = $validator->validate($newCategory);
 
             if($errors->count() > 0){
-                throw new Exception(message: $errors);
+                throw new Exception(message: $errors->get(1));
             }
 
             $manager->persist($newCategory);

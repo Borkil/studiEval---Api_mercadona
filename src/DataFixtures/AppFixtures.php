@@ -29,14 +29,17 @@ class AppFixtures extends Fixture
                 ->setDescription($faker->realTextBetween(50, 255))
                 ->setPrice($faker->randomFloat(2,0,1500))
                 ->setImage($faker->image())
-                ->setCategory($categories[rand(0,2)]);
+                ->setCategory($categories[rand(0,2)])
+                ->setIsDeal(false)
+                ->setIsArchive(false);
 
             if(rand(0, 100) % 2 === 0)
             {   
-                $product->setFinishedDealAt(new DateTimeImmutable("+10 days"));
+                $product->setFinishDealAt(new DateTimeImmutable("+10 days"));
                 $product->setPercentage(10);
                 $newPrice= round((1 - ($product->getPercentage() / 100)) * $product->getPrice(),2);
                 $product->setPriceDeal($newPrice);
+                $product->setIsDeal(true);
             }
 
                 $manager->persist($product);
