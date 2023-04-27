@@ -22,16 +22,19 @@ class Product
         max: 150
     )]
     #[Assert\NotBlank()]
+    #[Assert\NotNull]
     #[Groups(['product:read', 'category:read'])]
     private ?string $label = null;
     
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\NotBlank()]
+    #[Assert\NotNull]
     #[Groups(['product:read', 'category:read'])]
     private ?string $description = null;
     
     #[ORM\Column(nullable: true)]
     #[Assert\Positive]
+    #[Assert\NotNull]
     #[Groups(['product:read', 'category:read'])]
     private ?float $Price = null;
 
@@ -51,18 +54,66 @@ class Product
     #[Groups(['product:read'])]
     private ?Category $category = null;
 
-    #[ORM\ManyToOne(inversedBy: 'Product')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?ProductStatus $productStatus = null;
+    #[ORM\Column(nullable: true)]
+    #[Assert\When(
+        expression: 'this.isIsDeal() === true',
+        constraints: [
+            new Assert\notNull()
+        ]
+    )]
+    #[Assert\When(
+        expression: 'this.isIsDeal() === false',
+        constraints: [
+            new Assert\IsNull()
+        ]
+    )]
+    private ?\DateTimeImmutable $finishDealdAt = null;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $finisheDealdAt = null;
-
-    #[ORM\Column(nullable: true)]
+    #[Assert\When(
+        expression: 'this.isIsDeal() === true',
+        constraints: [
+            new Assert\notNull(),
+            new Assert\Positive()
+        ]
+    )]
+    #[Assert\When(
+        expression: 'this.isIsDeal() === false',
+        constraints: [
+            new Assert\IsNull()
+        ]
+    )]
     private ?int $percentage = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\When(
+        expression: 'this.isIsDeal() === true',
+        constraints: [
+            new Assert\notNull(),
+            new Assert\Positive()
+        ]
+    )]
+    #[Assert\When(
+        expression: 'this.isIsDeal() === false',
+        constraints: [
+            new Assert\IsNull()
+        ]
+    )]
     private ?float $priceDeal = null;
+
+    #[ORM\Column]
+    #[Assert\NotNull]
+    #[Assert\When(
+        expression: 'this.isIsArchive() === true',
+        constraints: [
+            new Assert\IsFalse()
+        ]
+    )]
+    private ?bool $isDeal = null;
+    
+    #[ORM\Column]
+    #[Assert\NotNull]
+    private ?bool $isArchive = null;
 
     public function __construct() {
         $this->createdAt = new DateTimeImmutable();
@@ -158,26 +209,14 @@ class Product
         return $this;
     }
 
-    public function getProductStatus(): ?ProductStatus
+    public function getFinishDealAt(): ?\DateTimeImmutable
     {
-        return $this->productStatus;
+        return $this->finishDealdAt;
     }
 
-    public function setProductStatus(?ProductStatus $productStatus): self
+    public function setFinishDealAt(?\DateTimeImmutable $finishAt): self
     {
-        $this->productStatus = $productStatus;
-
-        return $this;
-    }
-
-    public function getFinishedDealAt(): ?\DateTimeImmutable
-    {
-        return $this->finisheDealdAt;
-    }
-
-    public function setFinishedDealAt(?\DateTimeImmutable $finishedAt): self
-    {
-        $this->finisheDealdAt = $finishedAt;
+        $this->finishDealdAt = $finishAt;
 
         return $this;
     }
@@ -202,6 +241,30 @@ class Product
     public function setPriceDeal(?float $priceDeal): self
     {
         $this->priceDeal = $priceDeal;
+
+        return $this;
+    }
+
+    public function isIsDeal(): ?bool
+    {
+        return $this->isDeal;
+    }
+
+    public function setIsDeal(bool $isDeal): self
+    {
+        $this->isDeal = $isDeal;
+
+        return $this;
+    }
+
+    public function isIsArchive(): ?bool
+    {
+        return $this->isArchive;
+    }
+
+    public function setIsArchive(bool $isArchive): self
+    {
+        $this->isArchive = $isArchive;
 
         return $this;
     }

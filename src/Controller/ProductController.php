@@ -49,12 +49,12 @@ class ProductController extends AbstractController
         content: new Model(type: Product::class)
     )]
     #[OA\Response(
-        response : 200,
+        response : Response::HTTP_CREATED,
         description : 'Successful operation',
         content: new Model(type: Product::class)
     )]
     #[OA\Response(
-        response : 400,
+        response : Response::HTTP_BAD_REQUEST,
         description : 'Invalide Request',
         content: new OA\JsonContent(
             type: 'object',
@@ -70,16 +70,17 @@ class ProductController extends AbstractController
     {
         try {
             $newProduct =$serializer->deserialize($request->getContent(), Product::class, 'json');
-
+            
             $errorValidator = $validator->validate($newProduct);
             if(count($errorValidator) > 0)
             {
                 throw new ValidatorException(message: 'Validation errors');
             }
 
+
             $entityManagerInterface->persist($newProduct);
             $entityManagerInterface->flush();
-            return $this->json($newProduct, Response::HTTP_ACCEPTED);
+            return $this->json($newProduct, Response::HTTP_CREATED);
 
         } catch (Exception $e) {
             return $this->json([
