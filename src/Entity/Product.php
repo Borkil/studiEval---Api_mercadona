@@ -14,7 +14,7 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:read', 'category:read'])]
+    #[Groups(['product:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 150)]
@@ -23,23 +23,23 @@ class Product
     )]
     #[Assert\NotBlank()]
     #[Assert\NotNull]
-    #[Groups(['product:read', 'product:create', 'category:read'])]
+    #[Groups(['product:read', 'product:create'])]
     private ?string $label = null;
     
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\NotBlank()]
     #[Assert\NotNull]
-    #[Groups(['product:read', 'product:create', 'category:read'])]
+    #[Groups(['product:read', 'product:create'])]
     private ?string $description = null;
     
     #[ORM\Column(nullable: true)]
     #[Assert\Positive]
     #[Assert\NotNull]
-    #[Groups(['product:read', 'product:create', 'category:read'])]
+    #[Groups(['product:read', 'product:create'])]
     private ?float $Price = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['product:read', 'product:create', 'category:read'])]
+    #[Groups(['product:read', 'product:create'])]
     private ?string $image = null;
     
     #[ORM\ManyToOne(inversedBy: 'product', cascade: ['persist'])]
@@ -59,7 +59,7 @@ class Product
             new Assert\IsNull()
         ]
     )]
-    #[Groups(['product:read', 'product:create', 'category:read'])]
+    #[Groups(['product:read', 'product:create'])]
     private ?\DateTimeImmutable $finishDealAt = null;
 
     #[ORM\Column(nullable: true)]
@@ -76,7 +76,7 @@ class Product
             new Assert\IsNull()
         ]
     )]
-    #[Groups(['product:read', 'product:create', 'category:read'])]
+    #[Groups(['product:read', 'product:create'])]
     private ?int $percentage = null;
 
     #[ORM\Column(nullable: true)]
@@ -93,7 +93,7 @@ class Product
             new Assert\IsNull()
         ]
     )]
-    #[Groups(['product:read', 'product:create', 'category:read'])]
+    #[Groups(['product:read', 'product:create'])]
     private ?float $priceDeal = null;
 
     #[ORM\Column]
@@ -104,20 +104,20 @@ class Product
             new Assert\IsFalse()
         ]
     )]
-    #[Groups(['product:read', 'product:create', 'category:read'])]
+    #[Groups(['product:read', 'product:create'])]
     private ?bool $isDeal = null;
     
     #[ORM\Column]
     #[Assert\NotNull]
-    #[Groups(['product:read', 'product:create', 'category:read'])]
+    #[Groups(['product:read', 'product:create'])]
     private ?bool $isArchive = null;
 
     #[ORM\Column]
-    #[Groups(['product:read', 'category:read'])]
+    #[Groups(['product:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    #[Groups(['product:read', 'category:read'])]
+    #[Groups(['product:read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct() {

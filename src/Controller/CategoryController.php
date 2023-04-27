@@ -23,13 +23,12 @@ class CategoryController extends AbstractController
     #[OA\Response(
         response: 200,
         description: 'show all categories',
-        content: new Model(type: Category::class)
+        content: new Model(type: Category::class, groups: ['category:read'])
     )]
     #[Route('/api/category', name: 'api_show_category', methods:['GET'])]
     public function index(CategoryRepository $categoryRepository): Response
     {
-        $data = $categoryRepository->findAll();
-        return $this->json($data, Response::HTTP_OK, [], ['groups'=>'category:read']);
+        return $this->json($categoryRepository->findAll(), Response::HTTP_OK, [], ['groups'=>'category:read']);
     }
     
     /**
