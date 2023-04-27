@@ -10,6 +10,7 @@ use App\Repository\ProductRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use OpenApi\Processors\AugmentProperties;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -48,8 +49,9 @@ class ProductController extends AbstractController
     #[OA\RequestBody(
         description:'Create a product',
         required:true,
-        content: new Model(type: Product::class)
+        content: new Model(type: Product::class, groups: ['product:create'])
     )]
+
     #[OA\Response(
         response : Response::HTTP_CREATED,
         description : 'Successful operation',
@@ -68,12 +70,7 @@ class ProductController extends AbstractController
     )]
                         
     #[Route('/api/product', name: 'api_create_product', methods:['POST'])]
-    public function add(
-    Request $request,
-    SerializerInterface $serializer,
-    EntityManagerInterface $entityManagerInterface,
-    ValidatorInterface $validator,
-    CategoryRepository $categoryRepository)
+    public function add(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManagerInterface,ValidatorInterface $validator)
     {
         try {
             $newProduct = $serializer->deserialize($request->getContent(), Product::class, 'json');
@@ -102,7 +99,7 @@ class ProductController extends AbstractController
     #[OA\RequestBody(
         description:'Update a product',
         required:true,
-        content: new Model(type: Product::class)
+        content: new Model(type: Product::class, groups:['product:create'])
     )]
     #[OA\Response(
         response : 200,

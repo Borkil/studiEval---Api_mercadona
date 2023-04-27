@@ -23,35 +23,27 @@ class Product
     )]
     #[Assert\NotBlank()]
     #[Assert\NotNull]
-    #[Groups(['product:read', 'category:read'])]
+    #[Groups(['product:read', 'product:create', 'category:read'])]
     private ?string $label = null;
     
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\NotBlank()]
     #[Assert\NotNull]
-    #[Groups(['product:read', 'category:read'])]
+    #[Groups(['product:read', 'product:create', 'category:read'])]
     private ?string $description = null;
     
     #[ORM\Column(nullable: true)]
     #[Assert\Positive]
     #[Assert\NotNull]
-    #[Groups(['product:read', 'category:read'])]
+    #[Groups(['product:read', 'product:create', 'category:read'])]
     private ?float $Price = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['product:read', 'category:read'])]
+    #[Groups(['product:read', 'product:create', 'category:read'])]
     private ?string $image = null;
-
-    #[ORM\Column]
-    #[Groups(['product:read', 'category:read'])]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\Column]
-    #[Groups(['product:read', 'category:read'])]
-    private ?\DateTimeImmutable $updatedAt = null;
-
+    
     #[ORM\ManyToOne(inversedBy: 'product', cascade: ['persist'])]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read','product:read'])]
     private ?Category $category = null;
 
     #[ORM\Column(nullable: true)]
@@ -67,7 +59,8 @@ class Product
             new Assert\IsNull()
         ]
     )]
-    private ?\DateTimeImmutable $finishDealdAt = null;
+    #[Groups(['product:read', 'product:create', 'category:read'])]
+    private ?\DateTimeImmutable $finishDealAt = null;
 
     #[ORM\Column(nullable: true)]
     #[Assert\When(
@@ -83,6 +76,7 @@ class Product
             new Assert\IsNull()
         ]
     )]
+    #[Groups(['product:read', 'product:create', 'category:read'])]
     private ?int $percentage = null;
 
     #[ORM\Column(nullable: true)]
@@ -99,6 +93,7 @@ class Product
             new Assert\IsNull()
         ]
     )]
+    #[Groups(['product:read', 'product:create', 'category:read'])]
     private ?float $priceDeal = null;
 
     #[ORM\Column]
@@ -109,11 +104,21 @@ class Product
             new Assert\IsFalse()
         ]
     )]
+    #[Groups(['product:read', 'product:create', 'category:read'])]
     private ?bool $isDeal = null;
     
     #[ORM\Column]
     #[Assert\NotNull]
+    #[Groups(['product:read', 'product:create', 'category:read'])]
     private ?bool $isArchive = null;
+
+    #[ORM\Column]
+    #[Groups(['product:read', 'category:read'])]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column]
+    #[Groups(['product:read', 'category:read'])]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct() {
         $this->createdAt = new DateTimeImmutable();
@@ -173,30 +178,6 @@ class Product
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
     public function getCategory(): ?Category
     {
         return $this->category;
@@ -211,12 +192,12 @@ class Product
 
     public function getFinishDealAt(): ?\DateTimeImmutable
     {
-        return $this->finishDealdAt;
+        return $this->finishDealAt;
     }
 
     public function setFinishDealAt(?\DateTimeImmutable $finishAt): self
     {
-        $this->finishDealdAt = $finishAt;
+        $this->finishDealAt = $finishAt;
 
         return $this;
     }
@@ -265,6 +246,30 @@ class Product
     public function setIsArchive(bool $isArchive): self
     {
         $this->isArchive = $isArchive;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
