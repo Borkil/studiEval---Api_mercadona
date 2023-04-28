@@ -23,7 +23,7 @@ class Category
     #[ORM\Column()]
     #[Assert\NotBlank]
     #[Assert\Length(max: 50)]
-    #[Groups(['product:read', 'category:read', 'product:create'])]
+    #[Groups(['product:read', 'product:create', 'category:read', 'category:create'])]
     private ?string $label = null;
 
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Product::class)]

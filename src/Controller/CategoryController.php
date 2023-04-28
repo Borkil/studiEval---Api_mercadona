@@ -37,12 +37,12 @@ class CategoryController extends AbstractController
     #[OA\RequestBody(
         description:'Create a category',
         required: true,
-        content: new Model(type: Category::class)
+        content: new Model(type: Category::class, groups: ['category:create'])
     )]
     #[OA\Response(
         response : Response::HTTP_CREATED,
         description : 'Successful operation',
-        content: new Model(type: Category::class)
+        content: new Model(type: Category::class, groups : ['category:read'])
     )]
     #[OA\Response(
         response : Response::HTTP_BAD_REQUEST,
@@ -90,7 +90,7 @@ class CategoryController extends AbstractController
     #[OA\Response(
         response : Response::HTTP_ACCEPTED,
         description : 'Successful operation',
-        content: new Model(type: Category::class)
+        content: new Model(type: Category::class, groups: ['category:read'])
     )]
     #[OA\Response(
         response : Response::HTTP_BAD_REQUEST,
