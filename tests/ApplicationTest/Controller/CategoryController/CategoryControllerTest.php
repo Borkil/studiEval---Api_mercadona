@@ -84,7 +84,7 @@ class CategoryControllerTest extends WebTestCase
   public function testUpdateCategoryRoute()
   {
     $this->loadFixtures(__DIR__.'/UniqueFixturesCategory.yaml');
-    $this->assertHasErrors('POST', '/api/category/1', Response::HTTP_ACCEPTED, $this->categoryJson());
+    $this->assertHasErrors('PUT', '/api/category/1', Response::HTTP_ACCEPTED, $this->categoryJson());
   }
 
   public function testShould_BadRequest_WhenPostInvalidFormatJson()
@@ -93,7 +93,7 @@ class CategoryControllerTest extends WebTestCase
     $this->assertHasErrors('POST', '/api/category', Response::HTTP_BAD_REQUEST, $this->getInvalidJsonFormat());
 
     //Update route test
-    $this->assertHasErrors('POST', '/api/category/1', Response::HTTP_BAD_REQUEST, $this->getInvalidJsonFormat());
+    $this->assertHasErrors('PUT', '/api/category/1', Response::HTTP_BAD_REQUEST, $this->getInvalidJsonFormat());
   }
 
   public function testShould_BadRequest_WhenPostInvalidCategory()
@@ -102,7 +102,7 @@ class CategoryControllerTest extends WebTestCase
     $this->assertHasErrors('POST', '/api/category', Response::HTTP_BAD_REQUEST, $this->getInvalidData());
 
     //Update route test
-    $this->assertHasErrors('POST', '/api/category/1', Response::HTTP_BAD_REQUEST, $this->getInvalidData());
+    $this->assertHasErrors('PUT', '/api/category/1', Response::HTTP_BAD_REQUEST, $this->getInvalidData());
   }
 
   public function testShould_BadRequest_WhenPostNotUniqueCategory()
@@ -115,7 +115,7 @@ class CategoryControllerTest extends WebTestCase
     $this->assertHasErrors('POST', '/api/category', Response::HTTP_BAD_REQUEST, $content);
 
     //Update route test
-    $this->assertHasErrors('POST', '/api/category/1', Response::HTTP_BAD_REQUEST, $content);
+    $this->assertHasErrors('PUT', '/api/category/1', Response::HTTP_BAD_REQUEST, $content);
   }
 
   /**

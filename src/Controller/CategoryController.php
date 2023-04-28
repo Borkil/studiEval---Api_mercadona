@@ -85,7 +85,7 @@ class CategoryController extends AbstractController
     #[OA\RequestBody(
         description:'Create a category',
         required: true,
-        content: new Model(type: Category::class)
+        content: new Model(type: Category::class, groups: ['category:create'])
     )]
     #[OA\Response(
         response : Response::HTTP_ACCEPTED,
@@ -103,7 +103,7 @@ class CategoryController extends AbstractController
             ]
         )
     )]
-    #[Route('/api/category/{id}', name: 'api_update_category', methods: ['POST'])]
+    #[Route('/api/category/{id}', name: 'api_update_category', methods: ['PUT'])]
     public function update(EntityManagerInterface $manager, Request $request, CategoryRepository $categoryRepository, int $id, SerializerInterface $serialiser, ValidatorInterface $validator)
     {
         try {
