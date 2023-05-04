@@ -36,7 +36,7 @@ class Product
     #[Assert\Positive]
     #[Assert\NotNull]
     #[Groups(['product:read', 'product:create'])]
-    private ?float $Price = null;
+    private ?float $price = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['product:read', 'product:create'])]
@@ -156,12 +156,12 @@ class Product
 
     public function getPrice(): ?float
     {
-        return $this->Price;
+        return $this->price;
     }
 
     public function setPrice(?float $Price): self
     {
-        $this->Price = $Price;
+        $this->price = $Price;
 
         return $this;
     }

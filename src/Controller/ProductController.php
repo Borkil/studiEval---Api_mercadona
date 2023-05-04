@@ -27,7 +27,7 @@ class ProductController extends AbstractController
         description: 'Return all products',
         content: new OA\JsonContent(
             type: 'array',
-            items: new OA\Items(ref: new Model(type: Product::class))
+            items: new OA\Items(ref: new Model(type: Product::class, groups: ['product:read']))
         )
     )]
     #[Route('/api/product', name: 'api_show_product', methods:['GET'])]
@@ -47,7 +47,7 @@ class ProductController extends AbstractController
     #[OA\Response(
         response : Response::HTTP_CREATED,
         description : 'Successful operation',
-        content: new Model(type: Product::class)
+        content: new Model(type: Product::class, groups: ['product:read'])
     )]
     #[OA\Response(
         response : Response::HTTP_BAD_REQUEST,
@@ -95,7 +95,7 @@ class ProductController extends AbstractController
     #[OA\Response(
         response : 200,
         description : 'Successful operation',
-        content: new Model(type: Product::class)
+        content: new Model(type: Product::class, groups: ['product:read'])
     )]
     #[OA\Response(
         response : 400,
