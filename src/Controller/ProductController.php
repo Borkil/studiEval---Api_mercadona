@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Exception;
 use App\Entity\Product;
+use App\Repository\CategoryRepository;
 use OpenApi\Attributes As OA;
 use App\Repository\ProductRepository;
 use DateTimeImmutable;
@@ -60,11 +61,14 @@ class ProductController extends AbstractController
             ]
         )
     )]               
-    #[Route('/api/product', name: 'api_create_product', methods:['POST', 'OPTIONS'])]
-    public function add(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManagerInterface,ValidatorInterface $validator)
+    #[Route('/api/product', name: 'api_create_product', methods:['POST'])]
+    public function add(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManagerInterface,ValidatorInterface $validator, CategoryRepository $categoryRepository)
     {
         try {
-            $newProduct = $serializer->deserialize($request->getContent(), Product::class, 'json');
+            $content = $request->getContent();
+            $newProduct = $serializer->deserialize($content, Product::class, 'json');
+            $category = $categoryRepository->findOneBy(['label' => $newProduct->getCategory()->getLabel()]);
+            $newProduct->setCategory($category);
 
             $errors = $validator->validate($newProduct);
 
@@ -109,9 +113,16 @@ class ProductController extends AbstractController
             ]
         )
     )]
-    #[Route('/api/product/{id}', name:'api_update_product', methods:['PUT'])]
+    #[Route('/api/product/{id}', name:'api_update_product', methods:['PUT', 'OPTIONS'])]
     public function update(EntityManagerInterface $entityManager,int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator)
     {
+        $header = ['Access-Control-Allow-Origin' => '*'];
+
+        if($request->getMethod() === 'OPTIONS'){
+            $header['Access-Control-Allow-Methods'] = 'PUT';
+            return $this->json([], 200, $header);
+        };
+
         try {
 
             $product = $entityManager->getRepository(Product::class)->find($id);
@@ -125,7 +136,9 @@ class ProductController extends AbstractController
             
             $content = $serializer->deserialize($request->getContent(), Product::class, 'json');
 
-            $priceDeal = round((1 - ($content->getPercentage() / 100)) * $product->getPrice());
+            if($content->isIsDeal()){
+                $priceDeal = round((1 - ($content->getPercentage() / 100)) * $product->getPrice());
+            }else{$priceDeal = null;}
             
             $product->setLabel($content->getLabel())
                 ->setDescription($content->getDescription())
@@ -146,14 +159,17 @@ class ProductController extends AbstractController
 
             $entityManager->flush();
 
-            return $this->json($product, Response::HTTP_ACCEPTED, [], ['groups'=>'product:read']);
+            return $this->json($product, Response::HTTP_OK, $header , ['groups'=>'product:read']);
 
         } catch (Exception $e) {
             return $this->json([
                 'status' => Response::HTTP_BAD_REQUEST,
                 'errorMessage' => $e->getMessage()
-            ], Response::HTTP_BAD_REQUEST);
-        } 
+            ], Response::HTTP_BAD_REQUEST, ['Access-Control-Allow-Origin' => '*']);
+        }
+
+
+
     }
 
 }
