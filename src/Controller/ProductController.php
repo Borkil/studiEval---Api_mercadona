@@ -60,7 +60,7 @@ class ProductController extends AbstractController
             ]
         )
     )]               
-    #[Route('/api/product', name: 'api_create_product', methods:['POST'])]
+    #[Route('/api/product', name: 'api_create_product', methods:['POST', 'OPTIONS'])]
     public function add(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManagerInterface,ValidatorInterface $validator)
     {
         try {
@@ -74,14 +74,15 @@ class ProductController extends AbstractController
 
             $entityManagerInterface->persist($newProduct);
             $entityManagerInterface->flush();
-            return $this->json($newProduct, Response::HTTP_CREATED, ['groups'=>'product:read']);
+            return $this->json($newProduct, Response::HTTP_CREATED,['Access-Control-Allow-Origin' => '*'] ,['groups'=>'product:read']);
 
         } catch (Exception $e) {
             return $this->json(
                 ['status' => Response::HTTP_BAD_REQUEST,
                  'message' => $e->getMessage()       
-            ],Response::HTTP_BAD_REQUEST);
+            ],Response::HTTP_BAD_REQUEST, ['Access-Control-Allow-Origin' => '*']);
         }
+
     }
 
     /**
