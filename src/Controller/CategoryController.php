@@ -30,6 +30,20 @@ class CategoryController extends AbstractController
     {
         return $this->json($categoryRepository->findAll(), Response::HTTP_OK, [], ['groups'=>'category:read']);
     }
+
+    /**
+     * Return one categories
+     */
+    #[OA\Response(
+        response: 200,
+        description: 'show one category',
+        content: new Model(type: Category::class, groups: ['category:read'])
+    )]
+    #[Route('/api/category/{id}', name: 'api_show_one_category', methods:['GET'])]
+    public function showOne(Category $category): Response
+    {
+        return $this->json($category, Response::HTTP_OK,[], ['groups'=>'category:read']);
+    }
     
     /**
      * Create a new category
@@ -69,7 +83,7 @@ class CategoryController extends AbstractController
             $manager->persist($newCategory);
             $manager->flush();
 
-        return $this->json($newCategory, Response::HTTP_CREATED, []);
+        return $this->json($newCategory, Response::HTTP_CREATED, ['Access-Control-Allow-Origin' => '*']);
 
         } catch (Exception $e) {
             return $this->json(
@@ -103,9 +117,16 @@ class CategoryController extends AbstractController
             ]
         )
     )]
-    #[Route('/api/category/{id}', name: 'api_update_category', methods: ['PUT'])]
+    #[Route('/api/category/{id}', name: 'api_update_category', methods: ['PUT', 'OPTIONS'])]
     public function update(EntityManagerInterface $manager, Request $request, CategoryRepository $categoryRepository, int $id, SerializerInterface $serialiser, ValidatorInterface $validator)
     {
+        $header = ['Access-Control-Allow-Origin' => '*'];
+
+        if($request->getMethod() === 'OPTIONS'){
+            $header['Access-Control-Allow-Methods'] = 'PUT';
+            return $this->json([], 200, $header);
+        };
+
         try {
             $categoryUpdate = $categoryRepository->find($id);
             $newCategory = $serialiser->deserialize($request->getContent(), Category::class, 'json');
@@ -119,12 +140,12 @@ class CategoryController extends AbstractController
             $categoryUpdate->setLabel($newCategory->getLabel());
             $manager->flush();
 
-            return $this->json($categoryUpdate, Response::HTTP_ACCEPTED);
+            return $this->json($categoryUpdate, Response::HTTP_OK, $header);
         } catch (Exception $e) {
             return $this->json(
                 ['status' => Response::HTTP_BAD_REQUEST,
                  'message' => $e->getMessage()       
-            ],Response::HTTP_BAD_REQUEST);
+            ],Response::HTTP_BAD_REQUEST, $header);
 
         }   
     }
