@@ -10,6 +10,7 @@ use App\Repository\ProductRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use Proxies\__CG__\App\Entity\Product as EntityProduct;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,6 +36,21 @@ class ProductController extends AbstractController
     public function index(ProductRepository $productRepository): Response
     {
         return $this->json($productRepository->findAll(), Response::HTTP_OK,[] , ['groups'=>'product:read']);
+    }
+
+    /**
+     * Return all product
+     */
+    #[OA\Response(
+        response: 200,
+        description: 'Return one product',
+        content: new Model(type: Product::class, groups: ['product:read'])
+    )]
+
+    #[Route('/api/product/{id}', name: 'api_show_one_product', methods:['GET'])]
+    public function getOneProduct(Product $product): Response
+    {
+        return $this->json($product, Response::HTTP_OK,[] , ['groups'=>'product:read']);
     }
     
     /**
