@@ -26,7 +26,7 @@ class ProductController extends AbstractController
      */
     #[OA\Response(
         response: 200,
-        description: 'Return all products',
+        description: 'Return all products order by updated date DESC',
         content: new OA\JsonContent(
             type: 'array',
             items: new OA\Items(ref: new Model(type: Product::class, groups: ['product:read']))
@@ -35,7 +35,7 @@ class ProductController extends AbstractController
     #[Route('/api/product', name: 'api_show_product', methods:['GET'])]
     public function index(ProductRepository $productRepository): Response
     {
-        return $this->json($productRepository->findAll(), Response::HTTP_OK,[] , ['groups'=>'product:read']);
+        return $this->json($productRepository->findAllOrderByUpdateDate(), Response::HTTP_OK,[] , ['groups'=>'product:read']);
     }
 
     /**

@@ -39,6 +39,17 @@ class ProductRepository extends ServiceEntityRepository
         }
     }
 
+    public function findAllOrderByUpdateDate(): array
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT p FROM App\Entity\Product p ORDER BY p.updatedAt DESC'
+        );
+
+        return $query->getResult();
+    }
+
 //    /**
 //     * @return Product[] Returns an array of Product objects
 //     */
