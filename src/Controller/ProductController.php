@@ -151,17 +151,13 @@ class ProductController extends AbstractController
             }
             
             $content = $serializer->deserialize($request->getContent(), Product::class, 'json');
-
-            if($content->isIsDeal()){
-                $priceDeal = round((1 - ($content->getPercentage() / 100)) * $product->getPrice());
-            }else{$priceDeal = null;}
-            
+                        
             $product->setLabel($content->getLabel())
                 ->setDescription($content->getDescription())
                 ->setPrice($content->getPrice())
                 ->setImage($content->getImage())
                 ->setPercentage($content->getPercentage())
-                ->setPriceDeal($priceDeal)
+                ->setPriceDeal($content->getPriceDeal())
                 ->setFinishDealAt($content->getFinishDealAt())
                 ->setIsDeal($content->isIsDeal())
                 ->setIsArchive($content->isIsArchive())
