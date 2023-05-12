@@ -130,7 +130,7 @@ class ProductController extends AbstractController
         )
     )]
     #[Route('/api/product/{id}', name:'api_update_product', methods:['PUT', 'OPTIONS'])]
-    public function update(EntityManagerInterface $entityManager,int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator)
+    public function update(EntityManagerInterface $entityManager,int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, CategoryRepository $categoryRepository)
     {
         $header = ['Access-Control-Allow-Origin' => '*'];
 
@@ -150,12 +150,16 @@ class ProductController extends AbstractController
                 ],Response::HTTP_NOT_FOUND);
             }
             
+
             $content = $serializer->deserialize($request->getContent(), Product::class, 'json');
+            $category = $categoryRepository->findOneBy(['label' => $content->getCategory()->getLabel()]);
+
                         
             $product->setLabel($content->getLabel())
                 ->setDescription($content->getDescription())
                 ->setPrice($content->getPrice())
                 ->setImage($content->getImage())
+                ->setCategory($category)
                 ->setPercentage($content->getPercentage())
                 ->setPriceDeal($content->getPriceDeal())
                 ->setFinishDealAt($content->getFinishDealAt())
