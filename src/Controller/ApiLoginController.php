@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ApiLoginController extends AbstractController
 {
-    #[Route('/api/login_check', name: 'app_api_login', methods:['POST', 'GET'])]
+    #[Route('/api/login_check', name: 'app_api_login', methods:['POST'])]
     public function apiLogin(): Response
     {
         $user = $this->getUser();
