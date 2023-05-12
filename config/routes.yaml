@@ -5,4 +5,4 @@ controllers:
     type: attribute
 
 api_login_check:
-    path: app_api_login
+    path: /api/login_check
