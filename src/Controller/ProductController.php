@@ -10,7 +10,6 @@ use App\Repository\ProductRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
-use Proxies\__CG__\App\Entity\Product as EntityProduct;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -39,7 +38,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * Return all product
+     * Return one product
      */
     #[OA\Response(
         response: 200,
@@ -77,9 +76,10 @@ class ProductController extends AbstractController
             ]
         )
     )]               
-    #[Route('/api/product', name: 'api_create_product', methods:['POST'])]
+    #[Route('/api/product/create', name: 'api_create_product', methods:['POST'])]
     public function add(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManagerInterface,ValidatorInterface $validator, CategoryRepository $categoryRepository)
     {
+
         try {
             $content = $request->getContent();
             $newProduct = $serializer->deserialize($content, Product::class, 'json');
@@ -94,13 +94,13 @@ class ProductController extends AbstractController
 
             $entityManagerInterface->persist($newProduct);
             $entityManagerInterface->flush();
-            return $this->json($newProduct, Response::HTTP_CREATED,['Access-Control-Allow-Origin' => '*'] ,['groups'=>'product:read']);
+            return $this->json($newProduct, Response::HTTP_CREATED,[] ,['groups'=>'product:read']);
 
         } catch (Exception $e) {
             return $this->json(
                 ['status' => Response::HTTP_BAD_REQUEST,
                  'message' => $e->getMessage()       
-            ],Response::HTTP_BAD_REQUEST, ['Access-Control-Allow-Origin' => '*']);
+            ],Response::HTTP_BAD_REQUEST, []);
         }
 
     }
@@ -129,16 +129,9 @@ class ProductController extends AbstractController
             ]
         )
     )]
-    #[Route('/api/product/{id}', name:'api_update_product', methods:['PUT', 'OPTIONS'])]
+    #[Route('/api/product/{id}', name:'api_update_product', methods:['PUT'])]
     public function update(EntityManagerInterface $entityManager,int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, CategoryRepository $categoryRepository)
     {
-        $header = ['Access-Control-Allow-Origin' => '*'];
-
-        if($request->getMethod() === 'OPTIONS'){
-            $header['Access-Control-Allow-Methods'] = 'PUT';
-            return $this->json([], 200, $header);
-        };
-
         try {
 
             $product = $entityManager->getRepository(Product::class)->find($id);
@@ -175,13 +168,13 @@ class ProductController extends AbstractController
 
             $entityManager->flush();
 
-            return $this->json($product, Response::HTTP_OK, $header , ['groups'=>'product:read']);
+            return $this->json($product, Response::HTTP_OK, [] , ['groups'=>'product:read']);
 
         } catch (Exception $e) {
             return $this->json([
                 'status' => Response::HTTP_BAD_REQUEST,
                 'errorMessage' => $e->getMessage()
-            ], Response::HTTP_BAD_REQUEST, ['Access-Control-Allow-Origin' => '*']);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
 

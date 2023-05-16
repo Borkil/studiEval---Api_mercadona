@@ -83,7 +83,7 @@ class CategoryController extends AbstractController
             $manager->persist($newCategory);
             $manager->flush();
 
-        return $this->json($newCategory, Response::HTTP_CREATED, ['Access-Control-Allow-Origin' => '*']);
+        return $this->json($newCategory, Response::HTTP_CREATED);
 
         } catch (Exception $e) {
             return $this->json(
@@ -117,16 +117,9 @@ class CategoryController extends AbstractController
             ]
         )
     )]
-    #[Route('/api/category/{id}', name: 'api_update_category', methods: ['PUT', 'OPTIONS'])]
+    #[Route('/api/category/{id}', name: 'api_update_category', methods: ['PUT'])]
     public function update(EntityManagerInterface $manager, Request $request, CategoryRepository $categoryRepository, int $id, SerializerInterface $serialiser, ValidatorInterface $validator)
     {
-        $header = ['Access-Control-Allow-Origin' => '*'];
-
-        if($request->getMethod() === 'OPTIONS'){
-            $header['Access-Control-Allow-Methods'] = 'PUT';
-            return $this->json([], 200, $header);
-        };
-
         try {
             $categoryUpdate = $categoryRepository->find($id);
             $newCategory = $serialiser->deserialize($request->getContent(), Category::class, 'json');
@@ -140,12 +133,12 @@ class CategoryController extends AbstractController
             $categoryUpdate->setLabel($newCategory->getLabel());
             $manager->flush();
 
-            return $this->json($categoryUpdate, Response::HTTP_OK, $header);
+            return $this->json($categoryUpdate, Response::HTTP_OK, [], ['groups'=>'category:read']);
         } catch (Exception $e) {
             return $this->json(
                 ['status' => Response::HTTP_BAD_REQUEST,
                  'message' => $e->getMessage()       
-            ],Response::HTTP_BAD_REQUEST, $header);
+            ],Response::HTTP_BAD_REQUEST);
 
         }   
     }
