@@ -2,18 +2,19 @@
 
 namespace App\Controller;
 
+use Exception;
 use App\Entity\Category;
 use OpenApi\Attributes As OA;
-use Nelmio\ApiDocBundle\Annotation\Model;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CategoryController extends AbstractController
 {
@@ -69,6 +70,7 @@ class CategoryController extends AbstractController
             ]
         )
     )]
+    #[IsGranted('ROLE_USER')]
     #[Route('/api/category', name: 'api_create_category', methods:['POST'])]
     public function create(Request $request, SerializerInterface $serializer, EntityManagerInterface $manager, ValidatorInterface $validator)
     {
@@ -117,6 +119,7 @@ class CategoryController extends AbstractController
             ]
         )
     )]
+    #[IsGranted('ROLE_USER')]
     #[Route('/api/category/{id}', name: 'api_update_category', methods: ['PUT'])]
     public function update(EntityManagerInterface $manager, Request $request, CategoryRepository $categoryRepository, int $id, SerializerInterface $serialiser, ValidatorInterface $validator)
     {

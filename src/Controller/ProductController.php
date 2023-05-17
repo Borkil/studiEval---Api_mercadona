@@ -3,17 +3,18 @@
 namespace App\Controller;
 
 use Exception;
+use DateTimeImmutable;
 use App\Entity\Product;
-use App\Repository\CategoryRepository;
 use OpenApi\Attributes As OA;
 use App\Repository\ProductRepository;
-use DateTimeImmutable;
+use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -75,8 +76,9 @@ class ProductController extends AbstractController
                 new OA\Property(property: 'errorMessage', type:'string')
             ]
         )
-    )]               
-    #[Route('/api/product/create', name: 'api_create_product', methods:['POST'])]
+    )]
+    #[IsGranted('ROLE_USER')]
+    #[Route('/api/product', name: 'api_create_product', methods:['POST'])]
     public function add(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManagerInterface,ValidatorInterface $validator, CategoryRepository $categoryRepository)
     {
 
@@ -129,6 +131,7 @@ class ProductController extends AbstractController
             ]
         )
     )]
+    #[IsGranted('ROLE_USER')]
     #[Route('/api/product/{id}', name:'api_update_product', methods:['PUT'])]
     public function update(EntityManagerInterface $entityManager,int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, CategoryRepository $categoryRepository)
     {
