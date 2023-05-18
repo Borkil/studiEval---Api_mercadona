@@ -2,10 +2,11 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Category;
 use Faker\Factory;
-use App\Entity\Product;
+use App\Entity\User;
 use DateTimeImmutable;
+use App\Entity\Product;
+use App\Entity\Category;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 
@@ -16,17 +17,21 @@ class AppFixtures extends Fixture
         $faker = Factory::create('fr_FR');
         $fakeCategorie = ['bricolage', 'alimentation', 'sport', 'jardin', 'meuble', 'decoration'];
         $categories = [];
+        $user = (new User())
+            ->setEmail('admin@mail.fr')
+            ->setPassword('$2y$13$GhoXHGjGzg5DvulYWQprvOdXlgrXntKoultYX39rnrFAq4DV7zDDS');
+        $manager->persist($user);
 
         foreach ($fakeCategorie as $categorie) {
             $categories[] = (new Category())->setLabel($categorie);
         }
 
-        for ($i=0; $i < 20; $i++) { 
+        for ($i=1; $i < 11; $i++) { 
             $product = (new Product())
                 ->setLabel($faker->text(30))
                 ->setDescription($faker->realTextBetween(10, 50))
                 ->setPrice($faker->randomFloat(2,0,500))
-                ->setImage($faker->image())
+                ->setImage('image0'. $i . '.jpg')
                 ->setCategory($categories[rand(0,5)])
                 ->setIsDeal(false)
                 ->setIsArchive(false);
