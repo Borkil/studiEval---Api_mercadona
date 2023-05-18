@@ -46,7 +46,7 @@ class ProductController extends AbstractController
         description: 'Return one product',
         content: new Model(type: Product::class, groups: ['product:read'])
     )]
-
+    #[IsGranted('ROLE_USER')]
     #[Route('/api/product/{id}', name: 'api_show_one_product', methods:['GET'])]
     public function getOneProduct(Product $product): Response
     {
