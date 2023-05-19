@@ -25,6 +25,12 @@ class UserController extends AbstractController
         return $this->json($userRepository->findAll(), Response::HTTP_OK, [], ['groups'=>'user:read']);
     }
 
+    #[Route('/api/user/{id}', name:'api_show_one_user', methods:['GET'])]
+    public function showOne(User $user):Response
+    {
+        return $this->json($user, Response::HTTP_OK, [], ['groups'=>'user:read']);
+    }
+
     #[Route('/api/user', name: 'api_create_user', methods: ['POST'])]
     public function create(Request $request, SerializerInterface $serializer, EntityManagerInterface $manager, UserPasswordHasherInterface $passwordHasher): Response
     {
