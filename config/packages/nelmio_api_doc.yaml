@@ -1,9 +1,101 @@
 nelmio_api_doc:
     documentation:
+        servers:
+          - url: http://api-mercadona.test
+            description: API OVER HTTP
+        
         info:
             title: Api Mercadona
             description: Cette API est créé dans le cadre d'une évaluation Studi
             version: 1.0.0
+
+        components:
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+            responses:
+                UnauthorizedError:
+                    description: Unauthorizer response Access token is missing or invalid
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: int
+                                    message:
+                                        type: string
+                BadRequestError:
+                    description: Return an error message
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: int
+                                    message:
+                                        type: string
+                NotFoundError:
+                    description: Not found error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: int
+                                    message:
+                                        type: string
+                RemoveSuccess:
+                    description: Remove is good
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    status:
+                                        type: int
+                                    message:
+                                        type: string
+            requestBodies:
+                CredentialLogin:
+                    description: A JSON Object containing user email and password
+                    required: true
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Login'
+            schemas:
+                UserRead:
+                    properties:
+                        id:
+                            type: integer
+                            example: 1
+                        email:
+                            type: string
+                            example: 'exemple@mail.fr'
+                        roles:
+                            type: array
+                            items:
+                                type: string
+                                example: 'ROLE_EXAMPLE'
+                Login:
+                    properties:
+                        username:
+                            type: string
+                            example: example@mail.fr
+                        password:
+                            type: string
+                            example: 'password'
+                JWTResponse:
+                    properties:
+                        token:
+                            type: string
+
     areas: # to filter documented areas
         path_patterns:
             - ^/api(?!/doc$) # Accepts routes under /api except /api/doc
+

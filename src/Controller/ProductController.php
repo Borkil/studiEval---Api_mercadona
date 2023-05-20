@@ -10,6 +10,7 @@ use App\Repository\ProductRepository;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,7 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-
+#[OA\Tag(name:"Product")]
 class ProductController extends AbstractController
 {
 
@@ -26,7 +27,7 @@ class ProductController extends AbstractController
      * Return all product
      */
     #[OA\Response(
-        response: 200,
+        response: Response::HTTP_OK,
         description: 'Return all products order by updated date DESC',
         content: new OA\JsonContent(
             type: 'array',
@@ -43,14 +44,32 @@ class ProductController extends AbstractController
      * Return one product
      */
     #[OA\Response(
-        response: 200,
+        response: Response::HTTP_OK,
         description: 'Return one product',
         content: new Model(type: Product::class, groups: ['product:read'])
     )]
+    #[OA\Response(
+        response : 
+            Response::HTTP_NOT_FOUND,
+            ref:'#/components/responses/NotFoundError',
+    )]
+    #[OA\Response(
+        response : 
+            Response::HTTP_UNAUTHORIZED,
+            ref:'#/components/responses/UnauthorizedError',
+    )]
+    #[Security(name: 'Bearer')]
     #[IsGranted('ROLE_USER')]
     #[Route('/api/product/{id}', name: 'api_show_one_product', methods:['GET'])]
-    public function getOneProduct(Product $product): Response
-    {
+    public function getOneProduct(ProductRepository $productRepository, Int $id): Response
+    {   
+        $product = $productRepository->find($id);
+        if(!$product){
+            return $this->json([
+                "status" => Response::HTTP_NOT_FOUND,
+                "message" => "Product not found" 
+            ], Response::HTTP_NOT_FOUND);
+        }
         return $this->json($product, Response::HTTP_OK,[] , ['groups'=>'product:read']);
     }
     
@@ -68,16 +87,16 @@ class ProductController extends AbstractController
         content: new Model(type: Product::class, groups: ['product:read'])
     )]
     #[OA\Response(
-        response : Response::HTTP_BAD_REQUEST,
-        description : 'Invalide Request',
-        content: new OA\JsonContent(
-            type: 'object',
-            properties: [
-                new OA\Property(property: 'status', type:'integer'),
-                new OA\Property(property: 'errorMessage', type:'string')
-            ]
-        )
+        response : 
+            Response::HTTP_BAD_REQUEST,
+            ref:'#/components/responses/BadRequestError',
     )]
+    #[OA\Response(
+        response : 
+            Response::HTTP_UNAUTHORIZED,
+            ref:'#/components/responses/UnauthorizedError',
+    )]
+    #[Security(name: 'Bearer')]
     #[IsGranted('ROLE_USER')]
     #[Route('/api/product', name: 'api_create_product', methods:['POST'])]
     public function add(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManagerInterface,ValidatorInterface $validator, CategoryRepository $categoryRepository)
@@ -117,21 +136,26 @@ class ProductController extends AbstractController
         content: new Model(type: Product::class, groups:['product:create'])
     )]
     #[OA\Response(
-        response : 200,
+        response : Response::HTTP_OK,
         description : 'Successful operation',
         content: new Model(type: Product::class, groups: ['product:read'])
     )]
     #[OA\Response(
-        response : 400,
-        description : 'Invalide Request',
-        content: new OA\JsonContent(
-            type: 'object',
-            properties: [
-                new OA\Property(property: 'status', type:'integer'),
-                new OA\Property(property: 'errorMessage', type:'string')
-            ]
-        )
+        response : 
+            Response::HTTP_NOT_FOUND,
+            ref:'#/components/responses/NotFoundError',
     )]
+    #[OA\Response(
+        response : 
+            Response::HTTP_BAD_REQUEST,
+            ref:'#/components/responses/BadRequestError',
+    )]
+    #[OA\Response(
+        response : 
+            Response::HTTP_UNAUTHORIZED,
+            ref:'#/components/responses/UnauthorizedError',
+    )]
+    #[Security(name: 'Bearer')]
     #[IsGranted('ROLE_USER')]
     #[Route('/api/product/{id}', name:'api_update_product', methods:['PUT'])]
     public function update(EntityManagerInterface $entityManager,int $id, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, CategoryRepository $categoryRepository)
@@ -177,7 +201,7 @@ class ProductController extends AbstractController
         } catch (Exception $e) {
             return $this->json([
                 'status' => Response::HTTP_BAD_REQUEST,
-                'errorMessage' => $e->getMessage()
+                'message' => $e->getMessage()
             ], Response::HTTP_BAD_REQUEST);
         }
     }
