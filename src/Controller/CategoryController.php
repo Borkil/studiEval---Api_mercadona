@@ -19,7 +19,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[IsGranted('ROLE_USER')]
 #[OA\Tag(name: "Category")]
-#[Security(name: 'Bearer')]
 class CategoryController extends AbstractController
 {
     /**
@@ -32,11 +31,6 @@ class CategoryController extends AbstractController
             type: 'array',
             items: new OA\Items(new Model(type: Category::class, groups: ['category:read']))
         )
-    )]
-    #[OA\Response(
-        response:
-            Response::HTTP_UNAUTHORIZED,
-            ref: '#/components/responses/UnauthorizedError'
     )]
     #[Route('/api/category', name: 'api_show_category', methods:['GET'])]
     public function index(CategoryRepository $categoryRepository): Response
@@ -62,6 +56,7 @@ class CategoryController extends AbstractController
             Response::HTTP_UNAUTHORIZED,
             ref: '#/components/responses/UnauthorizedError'
     )]
+    #[Security(name: 'Bearer')]
     #[Route('/api/category/{id}', name: 'api_show_one_category', methods:['GET'])]
     public function showOne(CategoryRepository $categoryRepository, Int $id): Response
     {   
@@ -98,6 +93,7 @@ class CategoryController extends AbstractController
             Response::HTTP_UNAUTHORIZED,
             ref: '#/components/responses/UnauthorizedError'
     )]
+    #[Security(name: 'Bearer')]
     #[Route('/api/category', name: 'api_create_category', methods:['POST'])]
     public function create(Request $request, SerializerInterface $serializer, EntityManagerInterface $manager, ValidatorInterface $validator)
     {
@@ -150,6 +146,7 @@ class CategoryController extends AbstractController
             Response::HTTP_UNAUTHORIZED,
             ref: '#/components/responses/UnauthorizedError'
     )]
+    #[Security(name: 'Bearer')]
     #[Route('/api/category/{id}', name: 'api_update_category', methods: ['PUT'])]
     public function update(EntityManagerInterface $manager, Request $request, CategoryRepository $categoryRepository, int $id, SerializerInterface $serialiser, ValidatorInterface $validator)
     {
