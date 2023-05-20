@@ -17,7 +17,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[IsGranted('ROLE_USER')]
 #[OA\Tag(name: "Category")]
 class CategoryController extends AbstractController
 {
@@ -37,7 +36,7 @@ class CategoryController extends AbstractController
     {
         return $this->json($categoryRepository->findAll(), Response::HTTP_OK, [], ['groups'=>'category:read']);
     }
-
+    
     /**
      * Return one category
      */
@@ -57,6 +56,7 @@ class CategoryController extends AbstractController
             ref: '#/components/responses/UnauthorizedError'
     )]
     #[Security(name: 'Bearer')]
+    #[IsGranted('ROLE_USER')]
     #[Route('/api/category/{id}', name: 'api_show_one_category', methods:['GET'])]
     public function showOne(CategoryRepository $categoryRepository, Int $id): Response
     {   
@@ -94,6 +94,7 @@ class CategoryController extends AbstractController
             ref: '#/components/responses/UnauthorizedError'
     )]
     #[Security(name: 'Bearer')]
+    #[IsGranted('ROLE_USER')]
     #[Route('/api/category', name: 'api_create_category', methods:['POST'])]
     public function create(Request $request, SerializerInterface $serializer, EntityManagerInterface $manager, ValidatorInterface $validator)
     {
@@ -147,6 +148,7 @@ class CategoryController extends AbstractController
             ref: '#/components/responses/UnauthorizedError'
     )]
     #[Security(name: 'Bearer')]
+    #[IsGranted('ROLE_USER')]
     #[Route('/api/category/{id}', name: 'api_update_category', methods: ['PUT'])]
     public function update(EntityManagerInterface $manager, Request $request, CategoryRepository $categoryRepository, int $id, SerializerInterface $serialiser, ValidatorInterface $validator)
     {
