@@ -1,8 +1,10 @@
 nelmio_api_doc:
     documentation:
         servers:
+          - url: https://api-mercadona.herokuapp.com
+            description: Production API - OVER HTTPS
           - url: http://api-mercadona.test
-            description: API OVER HTTP
+            description: Dev API In local environement - Not Use for test - API OVER HTTP
         
         info:
             title: Api Mercadona
